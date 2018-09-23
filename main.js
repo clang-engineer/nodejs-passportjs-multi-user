@@ -58,7 +58,11 @@ var app = http.createServer(function (request, response) {
                 fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
                     var template = templateHTML(title, list, description,
                         `<a href="/create">CREATE</a>
-                        <a href="/update?id=${queryData.id}">UPDATE</a>`);
+                        <a href="/update?id=${queryData.id}">UPDATE</a>
+                        <form action="/delete_process" method="post">
+                        <input type="hidden" name="id" value="${queryData.id}">
+                        <input type="submit" value="delete">
+                        </form>`);
                     response.writeHead(200);
                     response.end(template);
                 });
@@ -128,6 +132,19 @@ var app = http.createServer(function (request, response) {
                     response.writeHead(302, { Location: `/?id=${title}` });
                     response.end();
                 });
+            });
+        });
+    } else if (pathname === '/delete_process') {
+        var body = "";
+        request.on('data', function (data) {
+            body = body + data;
+        });
+        request.on('end', function () {
+            var post = qs.parse(body);
+            var id = post.id;
+            fs.unlink(`data/${id}`, function (error) {
+                response.writeHead(302, { Location: `/` });
+                response.end();
             });
         });
     } else {
