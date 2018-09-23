@@ -1,25 +1,17 @@
-var http=require('http');
-var fs=require('fs');
-var url=require('url');
+var http = require('http');
+var fs = require('fs');
+var url = require('url');
 
-var app=http.createServer(function(request,response){
-    var _url=request.url;
-    var queryData=url.parse(_url,true).query;
-    var title=queryData.id;    
+var app = http.createServer(function (request, response) {
+    var _url = request.url;
+    var queryData = url.parse(_url, true).query;
+    var pathname = url.parse(_url, true).pathname;
+    var title = queryData.id;
 
-    if(_url=='/'){
-        title='Welcome';
-    }
+    if (pathname === '/') {
+        fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
 
-    
-    if(_url=='/favicon.ico'){
-        return response.writeHead(404);
-    }
-
-    response.writeHead(200);
-    fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
-        // console.log(description);
-        var template=`
+            var template = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -40,10 +32,14 @@ var app=http.createServer(function(request,response){
         </body>
         </html>
         `
-        response.end(template);
-        
-    });
+            response.writeHead(200);
+            response.end(template);
+
+        });
+    } else {
+        response.writeHead(404);
+        response.end('not found');
+    }
 });
-    
-    app.listen(3000);
-    
+
+app.listen(3000);
