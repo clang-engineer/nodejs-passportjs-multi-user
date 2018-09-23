@@ -1,13 +1,14 @@
 var http=require('http');
 var fs=require('fs');
 var url=require('url');
+
 var app=http.createServer(function(request,response){
     var _url=request.url;
     var queryData=url.parse(_url,true).query;
-    console.log(queryData.idl);
+    var title=queryData.id;    
 
     if(_url=='/'){
-        _url='/index.html';
+        title='Welcome';
     }
 
     
@@ -16,8 +17,33 @@ var app=http.createServer(function(request,response){
     }
 
     response.writeHead(200);
-    response.end(queryData.id);
-    
+    fs.readFile(`data/${queryData.id}`,'utf8',function(err,description){
+        // console.log(description);
+        var template=`
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>WEB1- ${title}</title>
+        </head>
+        <body>
+        <h1><a href="/">WEB</a></h1>
+        <ul>
+        <li><a href="/?id=HTML">HTML</a></li>
+        <li><a href="/?id=CSS">CSS</a></li>
+        <li><a href="/?id=JavaScript">JavaScript</a></li>
+        </ul>
+        <h2>${title}</h2>
+        <p>${description}</p>
+        </body>
+        </html>
+        `
+        response.end(template);
+        
+    });
 });
-
-app.listen(3000);
+    
+    app.listen(3000);
+    
