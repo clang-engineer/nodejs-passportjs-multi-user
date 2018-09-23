@@ -2,40 +2,7 @@ var http = require('http');
 var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
-
-var template = {
-    HTML: function (title, list, body, link) {
-        return `
-        <!DOCTYPE html>
-            <html>
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WEB1- ${title}</title>
-        </head>
-        <body>
-        <h1><a href="/">WEB</a></h1>
-        ${list}
-        <p>${link}</p>
-        <h2>${title}</h2>
-        <p>${body}</p>
-        </body>
-        </html>
-        `
-    }, List: function (filelist) {
-        var list = '<ul>';
-        var i = 0;
-        while (i < filelist.length) {
-            list += `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
-            i++;
-        }
-        list += '</ul>';
-        return list;
-    }
-
-}
-
+var template=require('./lib/template.js')
 
 var app = http.createServer(function (request, response) {
     var _url = request.url;
