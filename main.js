@@ -56,9 +56,9 @@ var app = http.createServer(function (request, response) {
                 var title = queryData.id;
                 var list = templateList(filelist);
                 fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
-
                     var template = templateHTML(title, list, description,
-                        `<a href="/create">CREATE</a>`);
+                        `<a href="/create">CREATE</a>
+                        <a href="/update?id=${queryData.id}">UPDATE</a>`);
                     response.writeHead(200);
                     response.end(template);
                 });
@@ -91,8 +91,43 @@ var app = http.createServer(function (request, response) {
             var title = post.title;
             var description = post.description;
             fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
-                response.writeHead(302,{Location:`/?id=${title}`});
+                response.writeHead(302, { Location: `/?id=${title}` });
                 response.end();
+            });
+        });
+    } else if (pathname === '/update') {
+        fs.readdir('./data', function (error, filelist) {
+            var title = queryData.id;
+            var list = templateList(filelist);
+            fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
+                var template = templateHTML(title, list, `
+                <form action="/update_process" method="post">
+                <input type="hidden" name="id" value="${title}">
+                <p><input name="title" type="text" placeholder="title" value="${title}"></p>
+                <p><textarea name="description" placeholder="description">${description}</textarea></p>
+                <p><input type="submit"></p>
+                </form>
+                `,
+                    `<a href="/create">CREATE</a>`);
+                response.writeHead(200);
+                response.end(template);
+            });
+        });
+    } else if (pathname === '/update_process') {
+        var body = "";
+        request.on('data', function (data) {
+            body = body + data;
+        });
+        request.on('end', function () {
+            var post = qs.parse(body);
+            var id = post.id;
+            var title = post.title;
+            var description = post.description;
+            fs.rename(`data/${id}`, `data/${title}`, function (error) {
+                fs.writeFile(`data/${title}`, description, 'utf8', function (err) {
+                    response.writeHead(302, { Location: `/?id=${title}` });
+                    response.end();
+                });
             });
         });
     } else {
