@@ -2,7 +2,8 @@ var http = require('http');
 var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
-var template=require('./lib/template.js')
+var template = require('./lib/template.js')
+var path = require('path');
 
 var app = http.createServer(function (request, response) {
     var _url = request.url;
@@ -13,7 +14,7 @@ var app = http.createServer(function (request, response) {
         if (queryData.id === undefined) {
             fs.readdir('./data', function (error, filelist) {
                 var title = 'WELCOME';
-                var description = 'node.js!!';
+                var description = 'make coding with node.js!!';
                 var list = template.List(filelist);
                 var html = template.HTML(title, list, description,
                     `<a href="/create">CREATE</a>`);
@@ -24,12 +25,13 @@ var app = http.createServer(function (request, response) {
             fs.readdir('./data', function (error, filelist) {
                 var title = queryData.id;
                 var list = template.List(filelist);
-                fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
+                var filterID = path.parse(queryData.id).base;
+                fs.readFile(`data/${filterID}`, 'utf8', function (err, description) {
                     var html = template.HTML(title, list, description,
                         `<a href="/create">CREATE</a>
-                        <a href="/update?id=${queryData.id}">UPDATE</a>
+                        <a href="/update?id=${title}">UPDATE</a>
                         <form action="/delete_process" method="post">
-                        <input type="hidden" name="id" value="${queryData.id}">
+                        <input type="hidden" name="id" value="${title}">
                         <input type="submit" value="delete">
                         </form>`);
                     response.writeHead(200);
@@ -40,7 +42,6 @@ var app = http.createServer(function (request, response) {
         }
     } else if (pathname === '/create') {
         fs.readdir('./data', function (error, filelist) {
-            var title = 'CREATE';
             var description = `
             <form action="/create_process" method="post">
             <p><input name="title" type="text" placeholder="title"></p>
@@ -49,7 +50,7 @@ var app = http.createServer(function (request, response) {
             </form>
             `;
             var list = template.List(filelist);
-            var html = template.HTML(title, list, description,
+            var html = template.HTML('CREATE', list, description,
                 `<a href="/create">CREATE</a>`);
             response.writeHead(200);
             response.end(html);
@@ -72,8 +73,9 @@ var app = http.createServer(function (request, response) {
         fs.readdir('./data', function (error, filelist) {
             var title = queryData.id;
             var list = template.List(filelist);
-            fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
-                var html = template.HTML(title, list, `
+            var filterID = path.parse(queryData.id).base;
+            fs.readFile(`data/${filterID}`, 'utf8', function (err, description) {
+                var html = template.HTML('UPDATE', list, `
                 <form action="/update_process" method="post">
                 <input type="hidden" name="id" value="${title}">
                 <p><input name="title" type="text" placeholder="title" value="${title}"></p>
@@ -111,7 +113,8 @@ var app = http.createServer(function (request, response) {
         request.on('end', function () {
             var post = qs.parse(body);
             var id = post.id;
-            fs.unlink(`data/${id}`, function (error) {
+            var filterID=path.parse(id).base;
+            fs.unlink(`data/${filterID}`, function (error) {
                 response.writeHead(302, { Location: `/` });
                 response.end();
             });
