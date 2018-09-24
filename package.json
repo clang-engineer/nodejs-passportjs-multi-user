@@ -1,0 +1,36 @@
+{
+  "name": "web2-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yorez/WEB2-Node.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yorez/WEB2-Node.js/issues"
+  },
+  "homepage": "https://github.com/yorez/WEB2-Node.js#readme",
+  "dependencies": {
+    "sanitize-html": "^1.19.0"
+  }
+}
+
+
+
+// npm init
+// -> package.json파일이 생성됨.
+// npm install -S sanitize-html
+// (
+// -> node_modules파일이 생성되고, 해당 폴더에 의존하고 있는 파일들이 설치됨.
+// +package.json파일에 dependencies에 sanite-html이 추가됨.
+// -g : pc 에서 전역적을오 사용할 모듈 설치 시,
+// -S : 해당 프로젝트에서 사용할 때.) 
