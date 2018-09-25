@@ -1,12 +1,40 @@
 var express = require('express');
 var app = express();
+var fs = require('fs');
+var path = require('path');
+var sanitizeHtml = require('sanitize-html');
+var template = require('./lib/template');
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.get('/', function (request, response) {
+    fs.readdir('./data', function (error, filelist) {
+        var title = 'WELCOME';
+        var description = 'make coding with node.js!!';
+        var list = template.List(filelist);
+        var html = template.HTML(title, list, description,
+            `<a href="/create">CREATE</a>`);
+        response.send(html);
+    });
 });
 
-app.get('/page', function (req, res) {
-    res.send('/page');
+app.get('/page/:pageId', function (request, response) {
+    fs.readdir('./data', function (error, filelist) {
+        var filterID = path.parse(request.params.pageId).base;
+        console.log(filterID);
+        fs.readFile(`data/${filterID}`, 'utf8', function (err, description) {
+            var title = request.params.pageId;
+            var sanitizeTitle = sanitizeHtml(title);
+            var sanitizeDescription = sanitizeHtml(description, { allowedTags: ['h1'] });
+            var list = template.List(filelist);
+            var html = template.HTML(sanitizeTitle, list, sanitizeDescription,
+                `<a href="/create">CREATE</a>
+                        <a href="/update?id=${title}">UPDATE</a>
+                        <form action="/delete_process" method="post">
+                        <input type="hidden" name="id" value="${title}">
+                        <input type="submit" value="delete">
+                        </form>`);
+            response.send(html);
+        });
+    });
 });
 
 app.listen(3000, function () {
