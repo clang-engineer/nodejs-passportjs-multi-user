@@ -19,12 +19,18 @@ app.get('*', function (request, response, next) {
         next();
     });
 });
+//url로 파일에 접근하게 해주는 Express 내장미들웨어 public에 있는 이미지에 접근할 수 있게함!
+//unsplash.com은 저작권에서 완전 자유로운 이미지를 제공함!! 참조!
+app.use(express.static('public'));
 
 app.get('/', function (request, response) {
         var title = 'WELCOME';
         var description = 'make coding with node.js!!';
         var list = template.List(request.list);
-        var html = template.HTML(title, list, description,
+        var html = template.HTML(title, list, `
+        ${description}
+        <img src="/images/light.jpg" style="width:300px; display:block; margin-top:10px;">
+        `,
             `<a href="/create">CREATE</a>`);
         response.send(html);
 });
