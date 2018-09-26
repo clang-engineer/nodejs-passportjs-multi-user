@@ -7,6 +7,7 @@
     "lib": "lib"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "sanitize-html": "^1.19.0"
   },
@@ -26,5 +27,7 @@
   "homepage": "https://github.com/yorez/WEB3-Node.js-Express#readme"
 }
 
+
 // npm install express --save
+// npm install body-parser --save
 // npm install -S sanitize-html 
