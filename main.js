@@ -6,8 +6,13 @@ var sanitizeHtml = require('sanitize-html');
 var template = require('./lib/template');
 var qs = require('querystring');
 var bodyParser = require('body-parser');
+var compression = require('compression');
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
+// compress all responses
+app.use(compression());
+
 
 app.get('/', function (request, response) {
     fs.readdir('./data', function (error, filelist) {
