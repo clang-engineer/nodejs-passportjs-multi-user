@@ -12,27 +12,30 @@ var compression = require('compression');
 app.use(bodyParser.urlencoded({ extended: false }))
 // compress all responses
 app.use(compression());
-
-
-app.get('/', function (request, response) {
+//미들웨어를 만들어 사용하는데, app.use 대신, app.get을 사용하는  이유는 get방식을 사용하는 것들에서만 본 미들웨어를 사용한다는 의미.
+app.get('*', function (request, response, next) {
     fs.readdir('./data', function (error, filelist) {
-        var title = 'WELCOME';
-        var description = 'make coding with node.js!!';
-        var list = template.List(filelist);
-        var html = template.HTML(title, list, description,
-            `<a href="/create">CREATE</a>`);
-        response.send(html);
+        request.list = filelist;
+        next();
     });
 });
 
+app.get('/', function (request, response) {
+        var title = 'WELCOME';
+        var description = 'make coding with node.js!!';
+        var list = template.List(request.list);
+        var html = template.HTML(title, list, description,
+            `<a href="/create">CREATE</a>`);
+        response.send(html);
+});
+
 app.get('/page/:pageId', function (request, response) {
-    fs.readdir('./data', function (error, filelist) {
         var filterID = path.parse(request.params.pageId).base;
         fs.readFile(`data/${filterID}`, 'utf8', function (err, description) {
             var title = request.params.pageId;
             var sanitizeTitle = sanitizeHtml(title);
             var sanitizeDescription = sanitizeHtml(description, { allowedTags: ['h1'] });
-            var list = template.List(filelist);
+            var list = template.List(request.list);
             var html = template.HTML(sanitizeTitle, list, sanitizeDescription,
                 `<a href="/create">CREATE</a>
                         <a href="/update/${title}">UPDATE</a>
@@ -41,12 +44,10 @@ app.get('/page/:pageId', function (request, response) {
                         <input type="submit" value="delete">
                         </form>`);
             response.send(html);
-        });
     });
 });
 
 app.get('/create', function (request, response) {
-    fs.readdir('./data', function (error, filelist) {
         var description = `
             <form action="/create_process" method="post">
             <p><input name="title" type="text" placeholder="title"></p>
@@ -54,12 +55,11 @@ app.get('/create', function (request, response) {
             <p><input type="submit"></p>
             </form>
             `;
-        var list = template.List(filelist);
+        var list = template.List(request.list);
         var html = template.HTML('CREATE', list, description,
             `<a href="/create">CREATE</a>`);
         response.writeHead(200);
         response.end(html);
-    });
 });
 
 app.post('/create_process', function (request, response) {
@@ -73,9 +73,8 @@ app.post('/create_process', function (request, response) {
 });
 
 app.get('/update/:pageId', function (request, response) {
-    fs.readdir('./data', function (error, filelist) {
         var title = request.params.pageId;
-        var list = template.List(filelist);
+        var list = template.List(request.list);
         var filterID = path.parse(request.params.pageId).base;
         fs.readFile(`data/${filterID}`, 'utf8', function (err, description) {
             var html = template.HTML('UPDATE', list, `
@@ -89,7 +88,6 @@ app.get('/update/:pageId', function (request, response) {
                 `<a href="/create">CREATE</a>`);
             response.writeHead(200);
             response.end(html);
-        });
     });
 });
 
