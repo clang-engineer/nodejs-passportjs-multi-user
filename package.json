@@ -10,6 +10,7 @@
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "express": "^4.16.3",
+    "helmet": "^3.13.0",
     "sanitize-html": "^1.19.0"
   },
   "devDependencies": {},
@@ -28,8 +29,8 @@
   "homepage": "https://github.com/yorez/WEB3-Node.js-Express#readme"
 }
 
-
 // npm install express --save
 // npm install body-parser --save
 // npm install compression --save
 // npm install -S sanitize-html 
+// npm install --save helmet

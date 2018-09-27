@@ -6,11 +6,14 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 var indexRouter=require('./routes/index');
 var topicRouter=require('./routes/topic');
+var helmet = require('helmet')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // compress all responses
 app.use(compression());
+//보안을 위한 헬멧 사용
+app.use(helmet());
 //미들웨어를 만들어 사용하는데, app.use 대신, app.get을 사용하는  이유는 get방식을 사용하는 것들에서만 본 미들웨어를 사용한다는 의미.
 app.get('*', function (request, response, next) {
     fs.readdir('./data', function (error, filelist) {
