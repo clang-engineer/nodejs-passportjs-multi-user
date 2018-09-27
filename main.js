@@ -2,11 +2,9 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var path = require('path');
-var sanitizeHtml = require('sanitize-html');
-var template = require('./lib/template');
-var qs = require('querystring');
 var bodyParser = require('body-parser');
 var compression = require('compression');
+var indexRouter=require('./routes/index');
 var topicRouter=require('./routes/topic');
 
 // parse application/x-www-form-urlencoded
@@ -24,19 +22,8 @@ app.get('*', function (request, response, next) {
 //unsplash.com은 저작권에서 완전 자유로운 이미지를 제공함!! 참조!
 app.use(express.static('public'));
 //express router! 분리한 파일에서는 /topic 제거해야함.
+app.use('/',indexRouter);
 app.use('/topic',topicRouter);
-
-app.get('/', function (request, response) {
-    var title = 'WELCOME';
-    var description = 'make coding with node.js!!';
-    var list = template.List(request.list);
-    var html = template.HTML(title, list, `
-        ${description}
-        <img src="/images/light.jpg" style="width:300px; display:block; margin-top:10px;">
-        `,
-        `<a href="/topic/create">CREATE</a>`);
-    response.send(html);
-});
 
 app.use(function (req, res, next) {
     res.status(404).send('Sorry cant find that!');
