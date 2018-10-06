@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 var indexRouter=require('./routes/index');
 var topicRouter=require('./routes/topic');
+var authRouter=require('./routes/auth');
 var helmet = require('helmet')
 
 // parse application/x-www-form-urlencoded
@@ -27,6 +28,7 @@ app.use(express.static('public'));
 //express router! 분리한 파일에서는 /topic 제거해야함.
 app.use('/',indexRouter);
 app.use('/topic',topicRouter);
+app.use('/auth',authRouter);
 
 app.use(function (req, res, next) {
     res.status(404).send('Sorry cant find that!');
