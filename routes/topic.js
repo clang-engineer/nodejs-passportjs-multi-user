@@ -18,8 +18,7 @@ router.get('/create', function (request, response) {
     var list = template.List(request.list);
     var html = template.HTML('CREATE', list, description,
         `<a href="/topic/create">CREATE</a>`);
-    response.writeHead(200);
-    response.end(html);
+    response.send(html);
 });
 
 router.post('/create_process', function (request, response) {
@@ -46,8 +45,7 @@ router.get('/update/:pageId', function (request, response) {
                 </form>
                 `,
             `<a href="/topic/create">CREATE</a>`);
-        response.writeHead(200);
-        response.end(html);
+        response.send(html);
     });
 });
 
