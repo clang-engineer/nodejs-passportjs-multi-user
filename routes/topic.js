@@ -5,9 +5,13 @@ var path = require('path');
 var fs = require('fs');
 var sanitizeHtml = require('sanitize-html');
 var template = require('../lib/template');
-
+var auth = require('../lib/auth');
 
 router.get('/create', function (request, response) {
+    if (!auth.isOwner(request, response)) {
+        response.redirect('/');
+        return false;
+    }
     var description = `
             <form action="/topic/create_process" method="post">
             <p><input name="title" type="text" placeholder="title"></p>
@@ -17,11 +21,15 @@ router.get('/create', function (request, response) {
             `;
     var list = template.List(request.list);
     var html = template.HTML('CREATE', list, description,
-        `<a href="/topic/create">CREATE</a>`);
+        `<a href="/topic/create">CREATE</a>`, auth.statusUI(request, response));
     response.send(html);
 });
 
 router.post('/create_process', function (request, response) {
+    if (!auth.isOwner(request, response)) {
+        response.redirect('/');
+        return false;
+    }
     var post = request.body;
     var title = post.title;
     var description = post.description;
@@ -32,6 +40,10 @@ router.post('/create_process', function (request, response) {
 });
 
 router.get('/update/:pageId', function (request, response) {
+    if (!auth.isOwner(request, response)) {
+        response.redirect('/');
+        return false;
+    }
     var title = request.params.pageId;
     var list = template.List(request.list);
     var filterID = path.parse(request.params.pageId).base;
@@ -44,7 +56,7 @@ router.get('/update/:pageId', function (request, response) {
                 <p><input type="submit"></p>
                 </form>
                 `,
-            `<a href="/topic/create">CREATE</a>`);
+            `<a href="/topic/create">CREATE</a>`, auth.statusUI(request, response));
         response.send(html);
     });
 });
@@ -88,10 +100,10 @@ router.get('/:pageId', function (request, response, next) {
                 <form action="/topic/delete_process" method="post">
                 <input type="hidden" name="id" value="${title}">
                 <input type="submit" value="delete">
-                </form>`);
+                </form>`, auth.statusUI(request, response));
             response.send(html);
         }
     });
 });
 
-module.exports=router;
+module.exports = router;

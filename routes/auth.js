@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var template = require('../lib/template');
+var auth = require('../lib/auth');
 
 var authData = {
     email: 'orez',
@@ -19,7 +20,7 @@ router.get('/login', function (request, response) {
             `;
     var list = template.List(request.list);
     var html = template.HTML('Login', list, description,
-        `<a href="/topic/create">CREATE</a>`);
+        `<a href="/topic/create">CREATE</a>`, auth.statusUI(request, response));
     response.send(html);
 });
 
