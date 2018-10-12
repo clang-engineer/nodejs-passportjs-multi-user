@@ -35,6 +35,10 @@ app.use(session({
     saveUninitialized: true,
     store: new FileStore()
 }))
+
+var passport = require('passport')
+    , LocalStrategy = require('passport-local').Strategy;
+
 //express router! 분리한 파일에서는 /topic 제거해야함.
 app.use('/', indexRouter);
 app.use('/topic', topicRouter);
