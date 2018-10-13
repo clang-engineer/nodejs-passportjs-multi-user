@@ -49,12 +49,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    console.log('serialize', user)
+    done(null, user.email);
 });
 passport.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-        done(err, user);
-    });
+    console.log('deserialize', id)
+    done(null, authData);
 });
 
 
