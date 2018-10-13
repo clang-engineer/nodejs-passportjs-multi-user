@@ -4,12 +4,6 @@ var router = express.Router();
 var template = require('../lib/template');
 var auth = require('../lib/auth');
 
-var authData = {
-    email: 'orez',
-    password: '1111',
-    nickname: 'bucheo'
-}
-
 router.get('/login', function (request, response) {
     var description = `
             <form action="/auth/login_process" method="post">
