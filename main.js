@@ -85,7 +85,6 @@ passport.use(new LocalStrategy(
     }
 ));
 
-
 app.post('/auth/login_process',
     passport.authenticate('local', {
         successRedirect: '/',
