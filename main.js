@@ -36,8 +36,14 @@ app.use(session({
     store: new FileStore()
 }))
 
-var passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
+
+app.post('/auth/login_process',
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/auth/login'
+    }));
 
 //express router! 분리한 파일에서는 /topic 제거해야함.
 app.use('/', indexRouter);
