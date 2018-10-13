@@ -5,7 +5,14 @@ var template = require('../lib/template');
 var auth = require('../lib/auth');
 
 router.get('/login', function (request, response) {
+    var fmsg = request.flash();
+    var feedback = '';
+    if (fmsg.error) {
+        feedback = fmsg.error[0];
+    }
+    console.log(feedback);
     var description = `
+    <div style="color:red;">${feedback}</div>
             <form action="/auth/login_process" method="post">
             <p><input name="email" type="text" placeholder="email"></p>
             <p><input name="password" type="password" placeholder="password"></p>

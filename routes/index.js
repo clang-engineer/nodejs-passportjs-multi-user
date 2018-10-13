@@ -6,10 +6,18 @@ var auth = require('../lib/auth');
 
 router.get('/', function (request, response) {
     console.log('/', request.user);
+
+    var fmsg = request.flash();
+    var feedback = '';
+    if (fmsg.success) {
+        feedback = fmsg.success[0];
+    }
+
     var title = 'WELCOME';
     var description = 'make coding with node.js!!';
     var list = template.List(request.list);
     var html = template.HTML(title, list, `
+     <div style="color:blue;">${feedback}</div>
         ${description}
         <img src="/images/light.jpg" style="width:300px; display:block; margin-top:10px;">
         `,
