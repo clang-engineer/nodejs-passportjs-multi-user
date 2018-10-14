@@ -4,9 +4,6 @@ var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
 var compression = require('compression');
-var indexRouter = require('./routes/index');
-var topicRouter = require('./routes/topic');
-var authRouter = require('./routes/auth');
 var helmet = require('helmet')
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
@@ -38,64 +35,10 @@ app.use(session({
 
 app.use(flash());
 
-var authData = {
-    email: 'orez',
-    password: '1111',
-    nickname: 'bucheo'
-};
-
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-    console.log('serialize', user)
-    done(null, user.email);
-});
-passport.deserializeUser(function (id, done) {
-    console.log('deserialize', id)
-    done(null, authData);
-});
-
-
-passport.use(new LocalStrategy(
-    {
-        usernameField: 'email',
-        passwordField: 'password'
-    },
-    function (username, password, done) {
-        console.log('LocalStrategy', username, password);
-        if (username === authData.email) {
-            console.log(1);
-            if (password === authData.password) {
-                console.log(2);
-                return done(null, authData, {
-                    message: 'welcome'
-                });
-            } else {
-                console.log(3);
-                return done(null, false, {
-                    message: 'Incorrect password.'
-                });
-            }
-        } else {
-            console.log(4);
-            return done(null, false, {
-                message: 'Incorrect username.'
-            });
-        }
-    }
-));
-
-app.post('/auth/login_process',
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/auth/login',
-        failureFlash: true,
-        successFlash: true
-    }));
+var passport = require('./lib/passport.js')(app);
+var indexRouter = require('./routes/index');
+var topicRouter = require('./routes/topic');
+var authRouter = require('./routes/auth')(passport);
 
 //express router! 분리한 파일에서는 /topic 제거해야함.
 app.use('/', indexRouter);
