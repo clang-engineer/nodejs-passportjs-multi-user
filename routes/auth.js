@@ -40,6 +40,29 @@ module.exports = function (passport) {
             failureFlash: true,
             successFlash: true
         }));
-        
+
+    router.get('/register', function (request, response) {
+        var fmsg = request.flash();
+        var feedback = '';
+        if (fmsg.error) {
+            feedback = fmsg.error[0];
+        }
+        console.log(feedback);
+        var description = `
+            <div style="color:red;">${feedback}</div>
+            <form action="/auth/register_process" method="post">
+            <p><input name="email" type="text" placeholder="email"></p>
+            <p><input name="password1" type="password" placeholder="password"></p>
+            <p><input name="password2" type="password" placeholder="password"></p>
+            <p><input name="DisplayName" type="text" placeholder="Display Name"></p>
+            <p><input type="submit" value="register"></p>
+            </form>
+            `;
+        var list = template.List(request.list);
+        var html = template.HTML('Login', list, description,
+            `<a href="/topic/create">CREATE</a>`, auth.statusUI(request, response));
+        response.send(html);
+    });
+
     return router;
 }
