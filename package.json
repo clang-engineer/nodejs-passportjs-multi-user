@@ -14,10 +14,12 @@
     "express-session": "^1.15.6",
     "helmet": "^3.13.0",
     "lowdb": "^1.0.0",
+    "nodemon": "^1.18.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "sanitize-html": "^1.19.0",
-    "session-file-store": "^1.2.0"
+    "session-file-store": "^1.2.0",
+    "shortid": "^2.2.13"
   },
   "devDependencies": {},
   "scripts": {
@@ -32,5 +34,14 @@
   "bugs": {
     "url": "https://github.com/yorez/WEB3-Node.js-Express/issues"
   },
-  "homepage": "https://github.com/yorez/WEB3-Node.js-Express#readme"
+  "homepage": "https://github.com/yorez/WEB3-Node.js-Express#readme",
+  "nodemonConfig": {
+    "ignore": [
+      "sessions/*",
+      "db.json",
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "0"
+  }
 }
