@@ -3,6 +3,12 @@ var router = express.Router();
 var template = require('../lib/template');
 var auth = require('../lib/auth');
 
+var low = require('lowdb');
+var FileSync = require('lowdb/adapters/FileSync');
+var adapter = new FileSync('db.json');
+var db = low(adapter);
+db.defaults({ users: [] }).write();
+
 module.exports = function (passport) {
 
     router.get('/login', function (request, response) {
@@ -62,6 +68,21 @@ module.exports = function (passport) {
         var html = template.HTML('Login', list, description,
             `<a href="/topic/create">CREATE</a>`, auth.statusUI(request, response));
         response.send(html);
+    });
+
+    router.post('/register_process', function (request, response) {
+        var post = request.body;
+        var email = post.email;
+        var password1 = post.password1;
+        var password2 = post.password2;
+        var DisplayName = post.DisplayName;
+
+        db.get('users').push({
+            email: email,
+            password: password1,
+            DisplayName: DisplayName
+        }).write();
+        response.redirect('/');
     });
 
     return router;
