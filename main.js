@@ -9,6 +9,8 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var flash = require('connect-flash');
 
+var db = require('./lib/db');
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // compress all responses
@@ -17,10 +19,8 @@ app.use(compression());
 app.use(helmet());
 //미들웨어를 만들어 사용하는데, app.use 대신, app.get을 사용하는  이유는 get방식을 사용하는 것들에서만 본 미들웨어를 사용한다는 의미.
 app.get('*', function (request, response, next) {
-    fs.readdir('./data', function (error, filelist) {
-        request.list = filelist;
-        next();
-    });
+    request.list = db.get('topics').value();
+    next();
 });
 //url로 파일에 접근하게 해주는 Express 내장미들웨어 public에 있는 이미지에 접근할 수 있게함!
 //unsplash.com은 저작권에서 완전 자유로운 이미지를 제공함!! 참조!
