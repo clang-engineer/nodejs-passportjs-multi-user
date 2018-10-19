@@ -77,12 +77,13 @@ module.exports = function (passport) {
             request.flash('error', 'Password must same!');
             response.redirect('/auth/register');
         } else {
-            db.get('users').push({
+            var user = {
                 id: shortid.generate(),
                 email: email,
                 password: password1,
                 DisplayName: DisplayName
-            }).write();
+            }
+            db.get('users').push(user).write();
             response.redirect('/');
         };
     });
