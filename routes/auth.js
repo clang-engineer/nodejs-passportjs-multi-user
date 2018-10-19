@@ -14,7 +14,6 @@ module.exports = function (passport) {
         if (fmsg.error) {
             feedback = fmsg.error[0];
         }
-        console.log(feedback);
         var description = `
         <div style="color:red;">${feedback}</div>
         <form action="/auth/login_process" method="post">
@@ -50,7 +49,6 @@ module.exports = function (passport) {
         if (fmsg.error) {
             feedback = fmsg.error[0];
         }
-        console.log(feedback);
         var description = `
             <div style="color:red;">${feedback}</div>
             <form action="/auth/register_process" method="post">

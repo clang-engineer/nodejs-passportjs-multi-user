@@ -67,4 +67,3 @@ public/
 sessions
 package-lock.json
 db.json
-lib/db.js

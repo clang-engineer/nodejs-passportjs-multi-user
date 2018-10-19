@@ -5,8 +5,6 @@ var template = require('../lib/template');
 var auth = require('../lib/auth');
 
 router.get('/', function (request, response) {
-    console.log('/', request.user);
-
     var fmsg = request.flash();
     var feedback = '';
     if (fmsg.success) {
